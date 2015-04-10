@@ -1,0 +1,17 @@
+{
+    "equal": "Must be \"{value}\"",
+    "notEqual": "Must not be \"{value}\"",
+    "lessThan": "Must be less than {value}",
+    "atMost": "Must be at most {value}",
+    "greaterThan": "Must be greater than {value}",
+    "atLeast": "Must be at least {value}",
+    "between": "Must be between {a} and {b}",
+    "empty": "Must be empty not \"{value}\"",
+    "notEmpty": "Cannot be empty",
+    "notNull": "Must be provided",
+    "lengthOf": "Must be exactly {value, plural, one{# character} other{# characters}} long",
+    "lengthAtLeast": "Must be at least {value, plural, one{# character} other{# characters}} long",
+    "lengthAtMost": "Must be at most {value, plural, one{# character} other{# characters}} long",
+    "oneOf": "Must be one of: {value}",
+    "numeric": "Must be a number"
+}
