@@ -4,7 +4,7 @@ n:function(d,k,o){if(isNaN(d[k]))throw new Error("MessageFormat: '"+k+"' isn't a
 v:function(d,k){i18n.c(d,k);return d[k]},
 p:function(d,k,o,l,p){i18n.c(d,k);return d[k] in p?p[d[k]]:(k=i18n.lc[l](d[k]-o),k in p?p[k]:p.other)},
 s:function(d,k,p){i18n.c(d,k);return d[k] in p?p[d[k]]:p.other}};
-i18n["validators"]={
+i18n["predicates"]={
 "equal":function(d){return "Must be \""+i18n.v(d,"value")+"\""},
 "notEqual":function(d){return "Must not be \""+i18n.v(d,"value")+"\""},
 "lessThan":function(d){return "Must be less than "+i18n.v(d,"value")},

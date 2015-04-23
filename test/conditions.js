@@ -1,397 +1,314 @@
-import {assert} from "chai";
-//import {List, Map} from "immutable";
-import * as cond from "../src/conditions";
+import {assert} from 'chai';
+import {List, Map} from 'immutable';
+import {Status} from '../src/conditions';
+import * as C from '../src/conditions';
+import * as P from '../src/predicates';
+import en from '../src/i18n/en';
+import Promise from 'bluebird';
 
+
+function assertStatuses(i18n, result, expected) {
+    let flat = m => m.map(v => List.of(v.type, v.message(i18n)));
+    assert.equal(flat(result), flat(expected));
+}
+
+
+function assertAction(i18n, result, action, expected) {
+    assertStatuses(i18n, action(result), expected);
+}
+
+
+function assertCondition(i18n, values, conditional, expected) {
+    let p = conditional.check(values).then(statuses => {
+        assertStatuses(i18n, statuses, expected);
+    });
+}
+
+
+function msg(s) {
+    return () => s;
+}
+
+
+describe('Status', function() {
+    describe('combine', function() {
+        it('single', function() {
+            assert.strictEqual(
+                Status.combine(Status.normal()).type,
+                Status.NORMAL);
+            assert.strictEqual(
+                Status.combine(Status.disabled()).type,
+                Status.DISABLED);
+            assert.strictEqual(
+                Status.combine(Status.hidden()).type,
+                Status.HIDDEN);
+        });
+
+        it('disabled', function() {
+            assert.strictEqual(
+                Status.combine(Status.normal(), Status.disabled()).type,
+                Status.DISABLED);
+            assert.strictEqual(
+                Status.combine(Status.disabled(), Status.normal()).type,
+                Status.DISABLED);
+        });
+
+        it('hidden', function() {
+            assert.strictEqual(
+                Status.combine(Status.normal(), Status.hidden()).type,
+                Status.HIDDEN);
+            assert.strictEqual(
+                Status.combine(Status.disabled(), Status.hidden()).type,
+                Status.HIDDEN);
+            assert.strictEqual(
+                Status.combine(Status.hidden(), Status.normal()).type,
+                Status.HIDDEN);
+            assert.strictEqual(
+                Status.combine(Status.hidden(), Status.disabled()).type,
+                Status.HIDDEN);
+        });
+    });
+});
+
+
+describe('Actions', function() {
+    describe('hide', function() {
+        it('true', function() {
+            assertAction(
+                en,
+                true,
+                C.hide('a', 'b'),
+                Map({'a': Status.hidden(),
+                     'b': Status.hidden()}));
+            assertAction(
+                en,
+                true,
+                C.hide(msg('foo'), 'a', 'b'),
+                Map({'a': Status.hidden('foo'),
+                     'b': Status.hidden('foo')}));
+        });
+        it('false', function() {
+            assertAction(
+                en,
+                false,
+                C.hide('a', 'b'),
+                Map({'a': Status.normal(),
+                     'b': Status.normal()}));
+            assertAction(
+                en,
+                false,
+                C.hide(msg('foo'), 'a', 'b'),
+                Map({'a': Status.normal('foo'),
+                     'b': Status.normal('foo')}));
+        });
+    });
+
+    describe('show', function() {
+        it('true', function() {
+            assertAction(
+                en,
+                true,
+                C.show('a', 'b'),
+                Map({'a': Status.normal(),
+                     'b': Status.normal()}));
+            assertAction(
+                en,
+                true,
+                C.show(msg('foo'), 'a', 'b'),
+                Map({'a': Status.normal('foo'),
+                     'b': Status.normal('foo')}));
+        });
+        it('false', function() {
+            assertAction(
+                en,
+                false,
+                C.show('a', 'b'),
+                Map({'a': Status.hidden(),
+                     'b': Status.hidden()}));
+            assertAction(
+                en,
+                false,
+                C.show(msg('foo'), 'a', 'b'),
+                Map({'a': Status.hidden('foo'),
+                     'b': Status.hidden('foo')}));
+        });
+    });
+
+    describe('disable', function() {
+        it('true', function() {
+            assertAction(
+                en,
+                true,
+                C.disable('a', 'b'),
+                Map({'a': Status.disabled(),
+                     'b': Status.disabled()}));
+            assertAction(
+                en,
+                true,
+                C.disable(msg('foo'), 'a', 'b'),
+                Map({'a': Status.disabled('foo'),
+                     'b': Status.disabled('foo')}));
+        });
+        it('false', function() {
+            assertAction(
+                en,
+                false,
+                C.disable('a', 'b'),
+                Map({'a': Status.normal(),
+                     'b': Status.normal()}));
+            assertAction(
+                en,
+                false,
+                C.disable(msg('foo'), 'a', 'b'),
+                Map({'a': Status.normal('foo'),
+                     'b': Status.normal('foo')}));
+        });
+    });
+
+    describe('enable', function() {
+        it('true', function() {
+            assertAction(
+                en,
+                true,
+                C.enable('a', 'b'),
+                Map({'a': Status.normal(),
+                     'b': Status.normal()}));
+            assertAction(
+                en,
+                true,
+                C.enable(msg('foo'), 'a', 'b'),
+                Map({'a': Status.normal('foo'),
+                     'b': Status.normal('foo')}));
+        });
+        it('false', function() {
+            assertAction(
+                en,
+                false,
+                C.enable('a', 'b'),
+                Map({'a': Status.disabled(),
+                     'b': Status.disabled()}));
+            assertAction(
+                en,
+                false,
+                C.enable(msg('foo'), 'a', 'b'),
+                Map({'a': Status.disabled('foo'),
+                     'b': Status.disabled('foo')}));
+        });
+    });
+});
+
+
+describe('when', function() {
+    before(function() {
+        this.values = Map({'a': 42, 'b': 21});
+    });
+
+    describe('simple', function() {
+        it('show success', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(42)),
+                       C.show('b')),
+                Map({'b': Status.normal()}));
+        });
+
+        it('show failure', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(21)),
+                       C.show('b')),
+                Map({'b': Status.hidden()}));
+        });
+
+        it('hide success', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(42)),
+                       C.hide('b')),
+                Map({'b': Status.hidden()}));
+        });
+
+        it('hide failure', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(21)),
+                       C.hide('b')),
+                Map({'b': Status.normal()}));
+        });
+
+        it('enable success', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(42)),
+                       C.enable('b')),
+                Map({'b': Status.normal()}));
+        });
+
+        it('enable failure', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(21)),
+                       C.enable('b')),
+                Map({'b': Status.disabled()}));
+        });
+
+        it('disable success', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(42)),
+                       C.disable('b')),
+                Map({'b': Status.disabled()}));
+        });
+
+        it('disable failure', function() {
+            return assertCondition(
+                en,
+                this.values,
+                C.when(P.is('a', P.equalTo(21)),
+                       C.disable('b')),
+                Map({'b': Status.normal()}));
+        });
+    });
+
+    it('complex', function() {
+        return assertCondition(
+            en,
+            this.values,
+            C.when(P.is('a', P.equalTo(42)),
+                   C.enable('b'),
+                   C.disable(msg('y'), 'c'),
+                   C.show(msg('z'), 'c')),
+            Map({'b': Status.normal(),
+                 'c': Status.disabled('y')}));
+    });
+});
 
 
 describe('Conditions', function() {
-    describe('truthy', function() {
-        it('zero', function() {
-            assert.isFalse(cond.truthy(0));
-        });
-
-        it('non-zero', function() {
-            assert.isTrue(cond.truthy(1));
-        });
-
-        it('null', function() {
-            assert.isFalse(cond.truthy(null));
-        });
-
-        it('undefined', function() {
-            assert.isFalse(cond.truthy(undefined));
-        });
-
-        it('true', function() {
-            assert.isTrue(cond.truthy(true));
-        });
-
-        it('false', function() {
-            assert.isFalse(cond.truthy(false));
-        });
-
-        it('empty object', function() {
-            assert.isTrue(cond.truthy({}));
-        });
-
-        it('object', function() {
-            assert.isTrue(cond.truthy({'a': 1}));
-        });
-
-        it('empty array', function() {
-            assert.isTrue(cond.truthy([]));
-        });
-
-        it('array', function() {
-            assert.isTrue(cond.truthy([1]));
-        });
-    });
-
-    describe('falsy', function() {
-        it('zero', function() {
-            assert.isTrue(cond.falsy(0));
-        });
-
-        it('non-zero', function() {
-            assert.isFalse(cond.falsy(1));
-        });
-
-        it('null', function() {
-            assert.isTrue(cond.falsy(null));
-        });
-
-        it('undefined', function() {
-            assert.isTrue(cond.falsy(undefined));
-        });
-
-        it('true', function() {
-            assert.isFalse(cond.falsy(true));
-        });
-
-        it('false', function() {
-            assert.isTrue(cond.falsy(false));
-        });
-
-        it('empty object', function() {
-            assert.isFalse(cond.falsy({}));
-        });
-
-        it('object', function() {
-            assert.isFalse(cond.falsy({'a': 1}));
-        });
-
-        it('empty array', function() {
-            assert.isFalse(cond.falsy([]));
-        });
-
-        it('array', function() {
-            assert.isFalse(cond.falsy([1]));
-        });
-    });
-
-    describe('equal', function() {
-        it('null = undefined', function() {
-            assert.isFalse(cond.equal(null)(undefined));
-        });
-
-        it('"42" = 42', function() {
-            assert.isFalse(cond.equal("42")(42));
-        });
-    });
-
-    describe('notEqual', function() {
-        it('null = undefined', function() {
-            assert.isTrue(cond.notEqual(null)(undefined));
-        });
-
-        it('"42" = 42', function() {
-            assert.isTrue(cond.notEqual("42")(42));
-        });
-    });
-
-    describe('lessThan', function() {
-        it('valid', function() {
-            assert.isTrue(cond.lessThan(10)(9));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.lessThan(10)(10));
-        });
-    });
-
-    describe('atMost', function() {
-        it('valid', function() {
-            assert.isTrue(cond.atMost(10)(9));
-            assert.isTrue(cond.atMost(10)(10));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.atMost(10)(11));
-        });
-    });
-
-    describe('greaterThan', function() {
-        it('valid', function() {
-            assert.isTrue(cond.greaterThan(10)(11));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.greaterThan(10)(10));
-        });
-    });
-
-    describe('atLeast', function() {
-        it('valid', function() {
-            assert.isTrue(cond.atLeast(10)(10));
-            assert.isTrue(cond.atLeast(10)(11));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.atLeast(10)(9));
-        });
-    });
-
-    describe('between', function() {
-        it('valid', function() {
-            assert.isTrue(cond.between(1, 3)(1));
-            assert.isTrue(cond.between(1, 3)(2));
-            assert.isTrue(cond.between(1, 3)(3));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.between(1, 3)(0));
-            assert.isFalse(cond.between(1, 3)(4));
-        });
-    });
-
-    describe('notNull', function() {
-        it('null', function() {
-            assert.isFalse(cond.notNull()(null));
-        });
-
-        it('undefined', function() {
-            assert.isTrue(cond.notNull()(undefined));
-        });
-
-        it('empty string', function() {
-            assert.isTrue(cond.notNull()(""));
-        });
-
-        it('string', function() {
-            assert.isTrue(cond.notNull()("hello"));
-        });
-    });
-
-    describe('empty', function() {
-        it('null', function() {
-            assert.isTrue(cond.empty()(null));
-        });
-
-        it('undefined', function() {
-            assert.isTrue(cond.empty()(undefined));
-        });
-
-        it('zero', function() {
-            assert.isFalse(cond.empty()(0));
-        });
-
-        it('non-zero', function() {
-            assert.isFalse(cond.empty()(1));
-        });
-
-        it('empty string', function() {
-            assert.isTrue(cond.empty()(""));
-        });
-
-        it('string', function() {
-            assert.isFalse(cond.empty()("hello"));
-        });
-
-        it('empty array', function() {
-            assert.isTrue(cond.empty()([]));
-        });
-
-        it('array', function() {
-            assert.isFalse(cond.empty()([1]));
-            assert.isFalse(cond.empty()([[]]));
-        });
-
-        it('empty object', function() {
-            assert.isFalse(cond.empty()({}));
-        });
-
-        it('object', function() {
-            assert.isFalse(cond.empty()({'a': 42}));
-        });
-
-        it('cheating object', function() {
-            // Maybe this shouldn't be true? Use `hasOwnProperty`?
-            assert.isTrue(cond.empty()({'length': 0}));
-            assert.isFalse(cond.empty()({'length': 42}));
-        });
-    });
-
-    describe('notEmpty', function() {
-        it('null', function() {
-            assert.isFalse(cond.notEmpty()(null));
-        });
-
-        it('undefined', function() {
-            assert.isFalse(cond.notEmpty()(undefined));
-        });
-
-        it('zero', function() {
-            assert.isFalse(cond.notEmpty()(0));
-        });
-
-        it('non-zero', function() {
-            assert.isFalse(cond.notEmpty()(1));
-        });
-
-        it('empty string', function() {
-            assert.isFalse(cond.notEmpty()(""));
-        });
-
-        it('string', function() {
-            assert.isTrue(cond.notEmpty()("hello"));
-        });
-
-        it('empty array', function() {
-            assert.isFalse(cond.notEmpty()([]));
-        });
-
-        it('array', function() {
-            assert.isTrue(cond.notEmpty()([1]));
-            assert.isTrue(cond.notEmpty()([[]]));
-        });
-
-        it('empty object', function() {
-            assert.isFalse(cond.notEmpty()({}));
-        });
-
-        it('object', function() {
-            assert.isFalse(cond.notEmpty()({'a': 42}));
-        });
-
-        it('cheating object', function() {
-            // Maybe this shouldn't be true? Use `hasOwnProperty`?
-            assert.isFalse(cond.notEmpty()({'length': 0}));
-            assert.isTrue(cond.notEmpty()({'length': 42}));
-        });
-    });
-
-    describe('lengthOf', function() {
-        it('null', function() {
-            assert.isFalse(cond.lengthOf(2)(null));
-        });
-
-        it('undefined', function() {
-            assert.isFalse(cond.lengthOf(2)(undefined));
-        });
-
-        it('zero', function() {
-            assert.isFalse(cond.lengthOf(2)(0));
-        });
-
-        it('non-zero', function() {
-            assert.isFalse(cond.lengthOf(2)(1));
-        });
-
-        it('string', function() {
-            assert.isTrue(cond.lengthOf(0)(""));
-            assert.isTrue(cond.lengthOf(5)("hello"));
-        });
-
-        it('array', function() {
-            assert.isTrue(cond.lengthOf(0)([]));
-            assert.isTrue(cond.lengthOf(5)([1, 2, 3, 4, 5]));
-            assert.isTrue(cond.lengthOf(1)([[]]));
-        });
-
-        it('object', function() {
-            assert.isFalse(cond.lengthOf(0)({}));
-            assert.isFalse(cond.lengthOf(1)({'a': 42}));
-        });
-
-        it('cheating object', function() {
-            // Maybe this shouldn't be true? Use `hasOwnProperty`?
-            assert.isTrue(cond.lengthOf(0)({'length': 0}));
-            assert.isTrue(cond.lengthOf(42)({'length': 42}));
-        });
-    });
-
-    describe('lengthAtLeast', function() {
-        it('valid', function() {
-            assert.isTrue(cond.lengthAtLeast(2)('aa'));
-            assert.isTrue(cond.lengthAtLeast(2)('aaa'));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.lengthAtLeast(2)('a'));
-        });
-    });
-
-    describe('lengthAtMost', function() {
-        it('valid', function() {
-            assert.isTrue(cond.lengthAtMost(2)('a'));
-            assert.isTrue(cond.lengthAtMost(2)('aa'));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.lengthAtMost(2)('aaa'));
-        });
-    });
-
-    describe('oneOf', function() {
-        it('valid', function() {
-            assert.isTrue(cond.oneOf(['a', 'b'])('a'));
-            assert.isTrue(cond.oneOf(['a', 'b'])('b'));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.oneOf(['a', 'b'])(null));
-            assert.isFalse(cond.oneOf(['a', 'b'])(undefined));
-            assert.isFalse(cond.oneOf(['a', 'b'])('c'));
-            assert.isFalse(cond.oneOf(['1', 'b'])(1));
-        });
-    });
-
-    describe('regex', function() {
-        it('valid', function() {
-            assert.isTrue(cond.regex(/[a-z]/)('a'));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.regex(/[a-z]/)('1'));
-        });
-    });
-
-    describe('typeOf', function() {
-        it('valid', function() {
-            assert.isTrue(cond.typeOf('string')('a'));
-            assert.isTrue(cond.typeOf('string', 'number')(1));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.typeOf('string')(null));
-            assert.isFalse(cond.typeOf('string')(1));
-            assert.isFalse(cond.typeOf('string', 'number')(undefined));
-        });
-    });
-
-    describe('combine', function() {
-        it('valid', function() {
-            assert.isTrue(cond.combine(cond.typeOf('string'))('a'));
-            assert.isTrue(
-                cond.combine(cond.typeOf('string'),
-                             cond.lengthOf(2))('aa'));
-        });
-
-        it('invalid', function() {
-            assert.isFalse(cond.combine(cond.typeOf('string'))(1));
-            assert.isFalse(
-                cond.combine(cond.typeOf('string'),
-                             cond.lengthOf(2))(['a', 'a']));
+    it('xxx', function() {
+        let conditions = C.conditions(
+            C.when(P.is('a', P.equalTo('one')),
+                   C.enable('b'),
+                   C.hide('c')),
+            C.when(P.is('b', P.equalTo('two')),
+                   C.disable('d')));
+        let cond = C.instantiate(conditions);
+        let model = Map({'a': 'two',
+                         'b': 'two'});
+        return cond(model).then(statuses => {
+            assertStatuses(
+                en,
+                statuses,
+                Map({'b': Status.disabled(),
+                     'c': Status.normal(),
+                     'd': Status.disabled()}));
         });
     });
 });
