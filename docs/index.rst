@@ -10,6 +10,7 @@ Manner Core
    validators
    conditions
    async
+   i18n
 
 
 Indices and tables
@@ -18,4 +19,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

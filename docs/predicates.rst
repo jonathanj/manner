@@ -89,3 +89,9 @@ new ``Status``. Since status values are mutually exclusive—there is no sense i
 a field being both valid and invalid—combining multiple statuses collapses them
 into the one with the highest defined priority: Invalid fields trump valid
 fields.
+
+
+Custom messages
+---------------
+
+XXX: Talk about custom messages.

@@ -1,0 +1,48 @@
+Internationalization
+====================
+
+Internationalization is an essential part of being able to effectively
+communicate schema requirements and reasons to users; it's also a problem that
+is best considered at an early stage in software.
+
+In every case where Manner specifies that a function requires a message input,
+the value can either be a plain string—and thus no internationalization takes
+place—or a message function that accepts a mapping of keywords to a function
+taking some number of arguments and returning an internationalized message.
+
+In every, but the final, case where Manner specifies that it returns a message
+it will return a function that needs to be called with an internationalization
+map for the desired output language and any arguments that may need to be
+formatted into the result.
+
+We can better illustrate the concept with an example:
+
+.. code-block:: javascript
+
+   import {Status} from "manner/predicates";
+   import {i18nMessage} from "manner/i18n";
+   // A message with no internationalization. 
+   let plain = Status.invalid("Hello Bob");
+   plain.message()  // => "Hello Bob"
+   // Define some internationalization maps for our internationalized message.
+   let i18n_en = {'greetings': {'hello': args => "Hello " + args.value}};
+   let i18n_se = {'greetings': {'hello': args => "Hej " + args.value}};
+   let enhanced = Status.invalid(i18nMessage('greetings', 'hello'));
+   enhanced.message(i18n_en, ['Bob']);  // => "Hello Bob"
+   enhanced.message(i18n_se, ['Bob']);  // => "Hej Bob"
+
+
+Predicates
+----------
+
+Predicate messages in Manner are all defined in a way that all the input
+arguments are closed over by the returned function and only the
+internationalization map is needed to yield a message, thanks to the
+``predicate`` function. For example:
+
+.. code-block:: javascript
+
+   import * as P from "manner/predicates";
+   import en from "manner/i18n/en";
+   P.notEqual(42)(21).message(en)  // => 'Must be "42"'
+   P.empty()(21).message(en)  // => 'Must be empty not "21"'
