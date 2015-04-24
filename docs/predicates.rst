@@ -83,12 +83,9 @@ A status is intended to be constructed only via its static methods and in the
 case of predicates there are only two such methods: ``valid()`` and
 ``invalid(reason)``.
 
-In the event that there is more than one status for a field, imagine that a
-field is involved in multiple predicates, the statuses are combined to form a
-new ``Status``. Since status values are mutually exclusive—there is no sense in
-a field being both valid and invalid—combining multiple statuses collapses them
-into the one with the highest defined priority: Invalid fields trump valid
-fields.
+In the event that there is more than one status for a field—imagine that a
+field is involved in multiple predicates—the statuses are combined to form a
+new ``Status`` with invalid statuses trumping valid statuses.
 
 
 Custom messages
