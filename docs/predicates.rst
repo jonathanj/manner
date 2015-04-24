@@ -69,6 +69,24 @@ equalTo(42))`` produces a bound predicate that, when invoked with an
 field ``one``, pass it to the ``equalTo(42)`` predicate and return the result.
 
 
+Combining predicates
+--------------------
+
+Predicates are generally small, simple functions with a single purpose, meaning
+they can easily be combined to form more complex predicates.
+
+Requiring all combined predicates to pass can be done with ``and`` (as in
+logical AND), while requiring at least one combined predicate to pass can be
+done with ``or`` (as in logical OR); both return a single new predicate. For
+example:
+
+.. code-block:: javascript
+
+   import * as P from "manner/predicates";
+   let positiveAndNot42 = P.and(P.greaterThan(0),
+                                P.notEqualTo(42));
+
+
 .. _predicate status:
 
 Predicate status
