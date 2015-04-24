@@ -73,7 +73,8 @@ Combining predicates
 --------------------
 
 Predicates are generally small, simple functions with a single purpose, meaning
-they can easily be combined to form more complex predicates.
+they can easily be combined to form more complex predicates. Some built-in
+predicates are combinations of others, such as ``numeric``.
 
 Requiring all combined predicates to pass can be done with ``and`` (as in
 logical AND), while requiring at least one combined predicate to pass can be
