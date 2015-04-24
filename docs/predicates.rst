@@ -23,7 +23,7 @@ same output.
 
 
 Boolean predicates
-----------------
+------------------
 
 A boolean predicate is a simple factory that takes some arguments, used to set up
 any conditions, and returns a new function that may accept more parameters and
