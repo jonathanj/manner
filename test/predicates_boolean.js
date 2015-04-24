@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import * as PB from "../src/predicates/basic";
+import * as PB from "../src/predicates/boolean";
 
 
 describe('Conditions', function() {

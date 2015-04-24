@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import {List, Map} from 'immutable';
 import uuid from 'uuid';
 import {i18nMessage} from './i18n';
-import * as PB from './predicates/basic';
+import * as PB from './predicates/boolean';
 import {maybe, delay, succeed} from './promises';
 import {partial, StatusBase} from './util';
 
@@ -199,9 +199,9 @@ export function is(fieldName, f) {
 
 
 /**
- * Create a predicate from a basic predicate and a message.
+ * Create a predicate from a boolean predicate and a message.
  *
- * @param {function} pred: Basic predicate returning ``true`` or ``false``.
+ * @param {function} pred: Boolean predicate returning ``true`` or ``false``.
  * @param {function} msgf: Function, called in the event that ``pred`` fails,
  *   passed an internationalization lookup object, predicate arguments and
  *   calling arguments, returning a localized message.

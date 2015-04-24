@@ -13,22 +13,22 @@ that only considers input equal to 42 valid.
 A predicate does not return ``true`` or ``false`` but a :ref:`status <predicate
 status>` value that more richly describes the result by providing the reason for
 some input not passing the predicate. However, predicates are usually
-constructed from *basic predicates* which do return ``true`` or ``false``. It is
+constructed from *boolean predicates* which do return ``true`` or ``false``. It is
 strongly encouraged to make your own and combine existing predicates to better
 suit your domain.
 
 Finally, it is important to note that Manner assumes that predicates—and, by
-extension, basic predicates—are pure: Given the same inputs they always have the
+extension, boolean predicates—are pure: Given the same inputs they always have the
 same output.
 
 
-Basic predicates
+Boolean predicates
 ----------------
 
-A basic predicate is a simple factory that takes some arguments, used to set up
+A boolean predicate is a simple factory that takes some arguments, used to set up
 any conditions, and returns a new function that may accept more parameters and
 finally returns ``true`` or ``false``. As an example, here is the implementation of
-the ``between`` basic predicate:
+the ``between`` boolean predicate:
 
 .. code-block:: javascript
 
@@ -37,18 +37,18 @@ the ``between`` basic predicate:
      return function (v) { return v >= a && v <= b; };
    }
 
-Often predicates are implemented in terms of basic predicates, while not
+Often predicates are implemented in terms of boolean predicates, while not
 strictly required this tends to result in a collection of small composable
 functions which means easier testing and greater implementation flexibility.
 
-Creating a predicate from a basic predicate is so common that there is a public
+Creating a predicate from a boolean predicate is so common that there is a public
 helper, ``predicate``, in Manner to do this. Here is the implementation of the
 ``between`` predicate:
 
 .. code-block:: javascript
 
    import * as P from "manner/predicates";
-   import * as PB from "manner/predicates/basic";
+   import * as PB from "manner/predicates/boolean";
    /** Between `a` and `b`, inclusively. */
    let between = P.predicate(PB.between, a_message);
 
