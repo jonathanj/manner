@@ -223,23 +223,41 @@ export function predicate(pred, msgf) {
 
 
 /**
- * Combine several predicates, taking a single argument, into one.
+ * Combine several predicates using logical AND.
  *
- * @param {...function} fs: Predicates, taking a single argument, to
+ * @param {function[]} fs: Predicates, each taking a single argument, to
  *   combine.
  * @return {function}: Combined predicate.
  */
-export function combine(...fs) {
+export function and(...fs) {
+    return value => {
+        return Promise.map(fs, f => {
+            return f(value);
+        }).then(results => {
+            return Status.combine(...results);
+        });
+    };
+}
+
+
+/**
+ * Combine several predicates using logical OR.
+ *
+ * @param {function[]} fs: Predicates, each taking a single argument, to
+ *   combine.
+ * @return {function}: Combined predicate.
+ */
+export function or(...fs) {
     return value => {
         return Promise.map(fs, f => {
             return f(value);
         }).then(results => {
             for (let result of results) {
-                if (Status.is(result, Status.INVALID)) {
+                if (Status.is(result, Status.VALID)) {
                     return result;
                 }
             }
-            return Status.valid();
+            return Status.combine(...results);
         });
     };
 }
@@ -330,8 +348,8 @@ export const lengthAtLeast = predicate(PB.lengthAtLeast, msg('lengthAtLeast'));
 export const elementOf = predicate(PB.elementOf, msg('elementOf'));
 /** Is the value a numeric type or a digit string? */
 export const numeric = predicate(
-    () => PB.combine(PB.typeOf('string', 'number'),
-                     PB.regex(/^\d*$/)),
+    () => PB.and(PB.typeOf('string', 'number'),
+                 PB.regex(/^\d*$/)),
     msg('numeric'));
 /** Checked? */
 export const checked = predicate(partial(PB.equal, true), msg('checked'));

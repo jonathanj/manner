@@ -166,20 +166,39 @@ describe('Validator functions', function() {
         });
     });
 
-    describe('combine', function() {
-        it('report the first failing validator', function() {
+    describe('and', function() {
+        it('invalid if any predicate is invalid', function() {
             return assertInvalid(
                 en,
                 'Must be "21"',
-                P.combine(P.equalTo(42),
-                          P.onceEvery(10, P.equalTo(21))),
+                P.and(P.equalTo(42),
+                      P.onceEvery(10, P.equalTo(21))),
                 42);
         });
 
-        it('return VALID if success', function() {
+        it('valid if all predicates are valid', function() {
             return assertValid(
                 en,
-                P.combine(P.equalTo(42)),
+                P.and(P.equalTo(42)),
+                42);
+        });
+    });
+
+    describe('or', function() {
+        it('invalid if all predicates are invalid', function() {
+            return assertInvalid(
+                en,
+                'Must be "21"',
+                P.or(P.equalTo(21),
+                     P.onceEvery(10, P.equalTo(21))),
+                42);
+        });
+
+        it('valid if any predicate is valid', function() {
+            return assertValid(
+                en,
+                P.or(P.equalTo(42),
+                     P.onceEvery(10, P.equalTo(21))),
                 42);
         });
     });

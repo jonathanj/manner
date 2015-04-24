@@ -2,7 +2,7 @@ import {assert} from "chai";
 import * as PB from "../src/predicates/boolean";
 
 
-describe('Conditions', function() {
+describe('Boolean predicates', function() {
     describe('truthy', function() {
         it('zero', function() {
             assert.isFalse(PB.truthy()(0));
@@ -377,19 +377,35 @@ describe('Conditions', function() {
         });
     });
 
-    describe('combine', function() {
+    describe('and', function() {
         it('valid', function() {
-            assert.isTrue(PB.combine(PB.typeOf('string'))('a'));
+            assert.isTrue(PB.and(PB.typeOf('string'))('a'));
             assert.isTrue(
-                PB.combine(PB.typeOf('string'),
-                             PB.lengthOf(2))('aa'));
+                PB.and(PB.typeOf('string'),
+                       PB.lengthOf(2))('aa'));
         });
 
         it('invalid', function() {
-            assert.isFalse(PB.combine(PB.typeOf('string'))(1));
+            assert.isFalse(PB.and(PB.typeOf('string'))(1));
             assert.isFalse(
-                PB.combine(PB.typeOf('string'),
-                             PB.lengthOf(2))(['a', 'a']));
+                PB.and(PB.typeOf('string'),
+                       PB.lengthOf(2))(['a', 'a']));
+        });
+    });
+
+    describe('or', function() {
+        it('valid', function() {
+            assert.isTrue(PB.or(PB.typeOf('string'))('a'));
+            assert.isTrue(
+                PB.or(PB.typeOf('string'),
+                      PB.lengthOf(2))('a'));
+        });
+
+        it('invalid', function() {
+            assert.isFalse(PB.or(PB.typeOf('string'))(1));
+            assert.isFalse(
+                PB.or(PB.typeOf('turnip'),
+                      PB.lengthOf(2))(['a']));
         });
     });
 });

@@ -110,14 +110,13 @@ export function typeOf(...typeNames) {
 }
 
 
-/** */
-export function combine(...fs) {
-    return v => {
-        for (let f of fs) {
-            if (!f(v)) {
-                return false;
-            }
-        }
-        return true;
-    };
+/** Combine several boolean predicates using logical AND. */
+export function and(...fs) {
+    return v => fs.every(x => x(v));
+}
+
+
+/** Combone several boolean predicates using logican OR. */
+export function or(...fs) {
+    return v => fs.some(x => x(v));
 }
