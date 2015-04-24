@@ -116,7 +116,7 @@ export function and(...fs) {
 }
 
 
-/** Combone several boolean predicates using logican OR. */
+/** Combine several boolean predicates using logican OR. */
 export function or(...fs) {
     return v => fs.some(x => x(v));
 }

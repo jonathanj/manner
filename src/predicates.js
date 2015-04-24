@@ -252,10 +252,8 @@ export function or(...fs) {
         return Promise.map(fs, f => {
             return f(value);
         }).then(results => {
-            for (let result of results) {
-                if (Status.is(result, Status.VALID)) {
-                    return result;
-                }
+            if (results.some(r => Status.is(r, Status.VALID))) {
+                return Status.valid();
             }
             return Status.combine(...results);
         });
