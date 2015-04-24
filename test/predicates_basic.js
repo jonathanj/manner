@@ -5,85 +5,85 @@ import * as PB from "../src/predicates/basic";
 describe('Conditions', function() {
     describe('truthy', function() {
         it('zero', function() {
-            assert.isFalse(PB.truthy(0));
+            assert.isFalse(PB.truthy()(0));
         });
 
         it('non-zero', function() {
-            assert.isTrue(PB.truthy(1));
+            assert.isTrue(PB.truthy()(1));
         });
 
         it('null', function() {
-            assert.isFalse(PB.truthy(null));
+            assert.isFalse(PB.truthy()(null));
         });
 
         it('undefined', function() {
-            assert.isFalse(PB.truthy(undefined));
+            assert.isFalse(PB.truthy()(undefined));
         });
 
         it('true', function() {
-            assert.isTrue(PB.truthy(true));
+            assert.isTrue(PB.truthy()(true));
         });
 
         it('false', function() {
-            assert.isFalse(PB.truthy(false));
+            assert.isFalse(PB.truthy()(false));
         });
 
         it('empty object', function() {
-            assert.isTrue(PB.truthy({}));
+            assert.isTrue(PB.truthy()({}));
         });
 
         it('object', function() {
-            assert.isTrue(PB.truthy({'a': 1}));
+            assert.isTrue(PB.truthy()({'a': 1}));
         });
 
         it('empty array', function() {
-            assert.isTrue(PB.truthy([]));
+            assert.isTrue(PB.truthy()([]));
         });
 
         it('array', function() {
-            assert.isTrue(PB.truthy([1]));
+            assert.isTrue(PB.truthy()([1]));
         });
     });
 
     describe('falsy', function() {
         it('zero', function() {
-            assert.isTrue(PB.falsy(0));
+            assert.isTrue(PB.falsy()(0));
         });
 
         it('non-zero', function() {
-            assert.isFalse(PB.falsy(1));
+            assert.isFalse(PB.falsy()(1));
         });
 
         it('null', function() {
-            assert.isTrue(PB.falsy(null));
+            assert.isTrue(PB.falsy()(null));
         });
 
         it('undefined', function() {
-            assert.isTrue(PB.falsy(undefined));
+            assert.isTrue(PB.falsy()(undefined));
         });
 
         it('true', function() {
-            assert.isFalse(PB.falsy(true));
+            assert.isFalse(PB.falsy()(true));
         });
 
         it('false', function() {
-            assert.isTrue(PB.falsy(false));
+            assert.isTrue(PB.falsy()(false));
         });
 
         it('empty object', function() {
-            assert.isFalse(PB.falsy({}));
+            assert.isFalse(PB.falsy()({}));
         });
 
         it('object', function() {
-            assert.isFalse(PB.falsy({'a': 1}));
+            assert.isFalse(PB.falsy()({'a': 1}));
         });
 
         it('empty array', function() {
-            assert.isFalse(PB.falsy([]));
+            assert.isFalse(PB.falsy()([]));
         });
 
         it('array', function() {
-            assert.isFalse(PB.falsy([1]));
+            assert.isFalse(PB.falsy()([1]));
         });
     });
 

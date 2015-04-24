@@ -172,6 +172,40 @@ describe('Validator functions', function() {
         });
     });
 
+    describe('checked', function() {
+        it('valid', function() {
+            return assertAllValid(
+                en,
+                [[P.checked(), true]]);
+        });
+
+        it('invalid', function() {
+            return assertAllInvalid(
+                en,
+                [['Must be checked', P.checked(), false],
+                 ['Must be checked', P.checked(), 0],
+                 ['Must be checked', P.checked(), ''],
+                 ['Must be checked', P.checked(), null]]);
+        });
+    });
+
+    describe('unchecked', function() {
+        it('valid', function() {
+            return assertAllValid(
+                en,
+                [[P.unchecked(), false]]);
+        });
+
+        it('invalid', function() {
+            return assertAllInvalid(
+                en,
+                [['Must not be checked', P.unchecked(), true],
+                 ['Must not be checked', P.unchecked(), 0],
+                 ['Must not be checked', P.unchecked(), ''],
+                 ['Must not be checked', P.unchecked(), null]]);
+        });
+    });
+
     describe('equal', function() {
         it('valid', function() {
             return assertAllValid(

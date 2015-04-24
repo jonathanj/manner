@@ -1,4 +1,6 @@
 {
+    "truthy": "Must be true",
+    "falsy": "Must be false",
     "equal": "Must be \"{value}\"",
     "notEqual": "Must not be \"{value}\"",
     "lessThan": "Must be less than {value}",
@@ -13,5 +15,7 @@
     "lengthAtLeast": "Must be at least {value, plural, one{# character} other{# characters}} long",
     "lengthAtMost": "Must be at most {value, plural, one{# character} other{# characters}} long",
     "oneOf": "Must be one of: {value}",
-    "numeric": "Must be a number"
+    "numeric": "Must be a number",
+    "checked": "Must be checked",
+    "unchecked": "Must not be checked"
 }

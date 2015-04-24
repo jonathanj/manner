@@ -283,11 +283,16 @@ export function onceEvery(ms, p) {
 
 
 const msg = partial(i18nMessage, 'predicates');
+/** Value is truthy. */
+export const truthy = predicate(PB.truthy, msg('truthy'));
+/** Value is falsy. */
+export const falsy = predicate(PB.truthy, msg('falsy'));
 /** Equal to a value specified later. Aliases: `equalTo` */
 export const equal = predicate(PB.equal, msg('equal'));
 export const equalTo = equal;
 /** Not equal to a value specified later. */
 export const notEqual = predicate(PB.notEqual, msg('notEqual'));
+export const notEqualTo = notEqual;
 /** Less than a value specified later. */
 export const lessThan = predicate(PB.lessThan, msg('lessThan'));
 /** Less than or equal to a value specified later. */
@@ -296,7 +301,7 @@ export const atMost = predicate(PB.atMost, msg('atMost'));
 export const greaterThan = predicate(PB.greaterThan, msg('greaterThan'));
 /** Greater than or equal to a value specified later. */
 export const atLeast = predicate(PB.atLeast, msg('atLeast'));
-/** Between, inclusively,`a` and `b`. */
+/** Between `a` and `b`, inclusively. */
 export const between = predicate(
     PB.between, msg('between', (args) => ({'a': args[0],
                                            'b': args[1]})));
@@ -320,3 +325,7 @@ export const numeric = predicate(
     () => PB.combine(PB.typeOf('string', 'number'),
                      PB.regex(/^\d*$/)),
     msg('numeric'));
+/** Checked? */
+export const checked = predicate(partial(PB.equal, true), msg('checked'));
+/** Unchecked? */
+export const unchecked = predicate(partial(PB.equal, false), msg('unchecked'));

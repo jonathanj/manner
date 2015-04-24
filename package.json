@@ -4,7 +4,8 @@
   "description": "A forms library for React",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register"
+      "test": "mocha --compilers js:babel/register",
+      "i18n": "messageformat --locale en --inputdir ./i18n/en/ --output src/i18n/en.js --module"
   },
   "repository": {
     "type": "git",

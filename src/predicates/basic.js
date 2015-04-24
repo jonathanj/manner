@@ -12,54 +12,54 @@ export function complement(f, ...partial) {
 
 
 /** Value is truthy. */
-export function truthy(value) {
-    return !!value;
+export function truthy() {
+    return v => !!v;
 }
 
 
 /** Value is falsy. */
-export function falsy(value) {
-    return !value;
+export function falsy() {
+    return v => !v;
 }
 
 
 /** Equal to a value specified later. */
-export function equal(value) {
-    return v => value === v;
+export function equal(expected) {
+    return v => expected === v;
 }
 
 
 /** Not equal to a value specified later. */
-export function notEqual(value) {
-    return v => value !== v;
+export function notEqual(expected) {
+    return v => expected !== v;
 }
 
 
 /** Less than a value specified later. */
-export function lessThan(value) {
-    return v => v < value;
+export function lessThan(expected) {
+    return v => v < expected;
 }
 
 
 /** Less than or equal to a value specified later. */
-export function atMost(value) {
-    return v => v !== null && v <= value;
+export function atMost(expected) {
+    return v => v !== null && v <= expected;
 }
 
 
 /** Greater than a value specified later. */
-export function greaterThan(value) {
-    return v => v > value;
+export function greaterThan(expected) {
+    return v => v > expected;
 }
 
 
 /** Greater than or equal to a value specified later. */
-export function atLeast(value) {
-    return v => v !== null && v >= value;
+export function atLeast(expected) {
+    return v => v !== null && v >= expected;
 }
 
 
-/** Between, inclusively,`a` and `b`. */
+/** Between `a` and `b`, inclusively. */
 export function between(a, b) {
     return v => v >= a && v <= b;
 }
@@ -91,9 +91,9 @@ export let lengthAtMost = (n) => compose(atMost(n), attrgetter('length'));
 
 
 /** Is a value in a given set? */
-export function oneOf(values) {
-    values = Set(values);
-    return v => values.contains(v);
+export function oneOf(expected) {
+    expected = Set(expected);
+    return v => expected.contains(v);
 }
 
 

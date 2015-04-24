@@ -5,6 +5,8 @@ v:function(d,k){i18n.c(d,k);return d[k]},
 p:function(d,k,o,l,p){i18n.c(d,k);return d[k] in p?p[d[k]]:(k=i18n.lc[l](d[k]-o),k in p?p[k]:p.other)},
 s:function(d,k,p){i18n.c(d,k);return d[k] in p?p[d[k]]:p.other}};
 i18n["predicates"]={
+"truthy":function(d){return "Must be true"},
+"falsy":function(d){return "Must be false"},
 "equal":function(d){return "Must be \""+i18n.v(d,"value")+"\""},
 "notEqual":function(d){return "Must not be \""+i18n.v(d,"value")+"\""},
 "lessThan":function(d){return "Must be less than "+i18n.v(d,"value")},
@@ -19,5 +21,7 @@ i18n["predicates"]={
 "lengthAtLeast":function(d){return "Must be at least "+i18n.p(d,"value",0,"en",{"one":i18n.n(d,"value")+" character","other":i18n.n(d,"value")+" characters"})+" long"},
 "lengthAtMost":function(d){return "Must be at most "+i18n.p(d,"value",0,"en",{"one":i18n.n(d,"value")+" character","other":i18n.n(d,"value")+" characters"})+" long"},
 "oneOf":function(d){return "Must be one of: "+i18n.v(d,"value")},
-"numeric":function(d){return "Must be a number"}}
+"numeric":function(d){return "Must be a number"},
+"checked":function(d){return "Must be checked"},
+"unchecked":function(d){return "Must not be checked"}}
 module.exports = i18n;
