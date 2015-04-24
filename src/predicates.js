@@ -252,19 +252,27 @@ export function combine(...fs) {
  *   an `Array` of arguments passed to `f` and an `Array` of arguments passed
  *   to the result of invoking `f`.
  * @param {function} f: Predicate (for example `equalTo`).
- * @param {...Any} args: Arguments to invoke `f` with.
+ * @param {...Any} partialArgs: Options arguments to invoke `f` with.
  * @return {function}: Behaves like `f` but invokes `msgf` to determine the
  *   validation message.
  */
-export function message(msgf, f, ...args) {
-    let f = f(...args);
-    return (...rest) => {
-        return maybe(f, ...rest).then(result => {
-            if (Status.is(result, Status.INVALID)) {
-                return Status.invalid(i18n => msgf(i18n, args, rest));
-            }
-            return Status.valid();
-        });
+export function message(msgf, f, ...partialArgs) {
+    let _msgf = msgf;
+    if (!(msgf instanceof Function)) {
+        _msgf = () => msgf;
+    }
+    return (...args) => {
+        let allArgs = partialArgs.concat(args);
+        let _f = f(...allArgs);
+        return (...rest) => {
+            return maybe(_f, ...rest).then(result => {
+                if (Status.is(result, Status.INVALID)) {
+                    return Status.invalid(
+                        i18n => _msgf(i18n, allArgs, rest));
+                }
+                return Status.valid();
+            });
+        };
     };
 }
 

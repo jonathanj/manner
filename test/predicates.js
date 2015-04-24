@@ -141,16 +141,28 @@ describe('Validator functions', function() {
             let msg = (i18n, args, rest) => {
                 assert.fail('This should not be called');
             };
-            return assertValid(en, P.message(msg, P.equal, 0), 0);
+            return assertAllValid(
+                en,
+                [[P.message(msg, P.equal, 0)(), 0],
+                 [P.message(msg, P.equal)(0), 0]]);
         });
-        it('invalid custom message', function() {
+        it('invalid with custom message function', function() {
             let msg = (i18n, args, rest) => {
                 assert.isObject(i18n);
                 assert.deepEqual(args, [0]);
                 assert.deepEqual(rest, [1]);
                 return 'Nope';
             };
-            return assertInvalid(en, 'Nope', P.message(msg, P.equal, 0), 1);
+            return assertAllInvalid(
+                en,
+                [['Nope', P.message(msg, P.equal, 0)(), 1],
+                 ['Nope', P.message(msg, P.equal)(0), 1]]);
+        });
+        it('invalid with custom plain message', function() {
+            return assertAllInvalid(
+                en,
+                [['Nope', P.message('Nope', P.equal, 0)(), 1],
+                 ['Nope', P.message('Nope', P.equal)(0), 1]]);
         });
     });
 

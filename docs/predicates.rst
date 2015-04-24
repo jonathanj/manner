@@ -94,4 +94,27 @@ fields.
 Custom messages
 ---------------
 
-XXX: Talk about custom messages.
+In the event that a custom message for a predicate is necessary, it's possible
+to use ``message`` to wrap an existing predicate with a customized message:
+
+.. note::
+
+   ``message`` always returns an asynchronous result, see :ref:`async`.
+
+.. code-block:: javascript
+
+   import * as P from "manner/predicates";
+   let myEqualTo = P.message("Nope", P.equalTo);
+   myEqualTo(42)(21).call('message');  // => "Nope"
+
+Or provide a message function to access input arguments or perform
+:ref:`i18n`:
+
+.. code-block:: javascript
+
+   import * as P from "manner/predicates";
+   function myEqualToMsg(_, args, rest) {
+     return args[0] + ' !== ' + rest[0];
+   }
+   let myEqualTo2 = P.message(myEqualToMsg, P.equalTo);
+   myEqualTo(42)(21).call('message')  // => "42 !== 21"
