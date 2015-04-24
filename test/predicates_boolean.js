@@ -340,17 +340,17 @@ describe('Conditions', function() {
         });
     });
 
-    describe('oneOf', function() {
+    describe('elementOf', function() {
         it('valid', function() {
-            assert.isTrue(PB.oneOf(['a', 'b'])('a'));
-            assert.isTrue(PB.oneOf(['a', 'b'])('b'));
+            assert.isTrue(PB.elementOf(['a', 'b'])('a'));
+            assert.isTrue(PB.elementOf(['a', 'b'])('b'));
         });
 
         it('invalid', function() {
-            assert.isFalse(PB.oneOf(['a', 'b'])(null));
-            assert.isFalse(PB.oneOf(['a', 'b'])(undefined));
-            assert.isFalse(PB.oneOf(['a', 'b'])('c'));
-            assert.isFalse(PB.oneOf(['1', 'b'])(1));
+            assert.isFalse(PB.elementOf(['a', 'b'])(null));
+            assert.isFalse(PB.elementOf(['a', 'b'])(undefined));
+            assert.isFalse(PB.elementOf(['a', 'b'])('c'));
+            assert.isFalse(PB.elementOf(['1', 'b'])(1));
         });
     });
 

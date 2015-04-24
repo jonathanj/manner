@@ -91,7 +91,7 @@ export let lengthAtMost = (n) => compose(atMost(n), attrgetter('length'));
 
 
 /** Is a value in a given set? */
-export function oneOf(expected) {
+export function elementOf(expected) {
     expected = Set(expected);
     return v => expected.contains(v);
 }
@@ -105,7 +105,7 @@ export function regex(expn) {
 
 /** Is the value's type one of the specified type names? */
 export function typeOf(...typeNames) {
-    let test = oneOf(typeNames);
+    let test = elementOf(typeNames);
     return v => test(typeof v);
 }
 

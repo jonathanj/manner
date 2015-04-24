@@ -492,21 +492,21 @@ describe('Validator functions', function() {
         });
     });
 
-    describe('oneOf', function() {
+    describe('elementOf', function() {
         it('valid', function() {
             return assertAllValid(
                 en,
-                [[P.oneOf(['a', 'b']), 'a'],
-                 [P.oneOf(['a', 'b']), 'b']]);
+                [[P.elementOf(['a', 'b']), 'a'],
+                 [P.elementOf(['a', 'b']), 'b']]);
         });
 
         it('invalid', function() {
             return assertAllInvalid(
                 en,
-                [['Must be one of: a,b', P.oneOf(['a', 'b']), null],
-                 ['Must be one of: a,b', P.oneOf(['a', 'b']), undefined],
-                 ['Must be one of: 1,b', P.oneOf(['1', 'b']), 1],
-                 ['Must be one of: a,b', P.oneOf(['a', 'b']), 'c']]);
+                [['Must be one of: a,b', P.elementOf(['a', 'b']), null],
+                 ['Must be one of: a,b', P.elementOf(['a', 'b']), undefined],
+                 ['Must be one of: 1,b', P.elementOf(['1', 'b']), 1],
+                 ['Must be one of: a,b', P.elementOf(['a', 'b']), 'c']]);
         });
     });
 

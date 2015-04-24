@@ -326,8 +326,8 @@ export const lengthOf = predicate(PB.lengthOf, msg('lengthOf'));
 export const lengthAtMost = predicate(PB.lengthAtMost, msg('lengthAtMost'));
 /** Length is at most `n`. */
 export const lengthAtLeast = predicate(PB.lengthAtLeast, msg('lengthAtLeast'));
-/** Is a value in a given set? */
-export const oneOf = predicate(PB.oneOf, msg('oneOf'));
+/** Is a value an element in a set? */
+export const elementOf = predicate(PB.elementOf, msg('elementOf'));
 /** Is the value a numeric type or a digit string? */
 export const numeric = predicate(
     () => PB.combine(PB.typeOf('string', 'number'),

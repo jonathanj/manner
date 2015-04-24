@@ -20,7 +20,7 @@ i18n["predicates"]={
 "lengthOf":function(d){return "Must be exactly "+i18n.p(d,"value",0,"en",{"one":i18n.n(d,"value")+" character","other":i18n.n(d,"value")+" characters"})+" long"},
 "lengthAtLeast":function(d){return "Must be at least "+i18n.p(d,"value",0,"en",{"one":i18n.n(d,"value")+" character","other":i18n.n(d,"value")+" characters"})+" long"},
 "lengthAtMost":function(d){return "Must be at most "+i18n.p(d,"value",0,"en",{"one":i18n.n(d,"value")+" character","other":i18n.n(d,"value")+" characters"})+" long"},
-"oneOf":function(d){return "Must be one of: "+i18n.v(d,"value")},
+"elementOf":function(d){return "Must be one of: "+i18n.v(d,"value")},
 "numeric":function(d){return "Must be a number"},
 "checked":function(d){return "Must be checked"},
 "unchecked":function(d){return "Must not be checked"}}
