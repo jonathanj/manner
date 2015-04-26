@@ -15,10 +15,10 @@ components to do so, this is left to the various framework integrations such as
    :maxdepth: 2
 
    models
+   async
    predicates
    validators
    conditions
-   async
    i18n
 
 

@@ -33,15 +33,27 @@ two-step process:
         P.is('one', P.equalTo(42)),
         P.is('two', P.notNull()));
 
-2. Instantiate a validators definition, creating an instance with its own state
-   suitable for repeated use with one particular model:
+2. Instantiate a validators definition to create an instance, a *validator*,
+   with its own state suitable for repeated use with one particular model:
 
    .. code-block:: javascript
 
       let formValidator = V.instantiate(someValidators);
       formValidator(my_model);  // => Validation results
 
-The ultimate result of invoking an instantiated validator definition is an
-``Immutable.Map`` of field names to :ref:`predicate status <predicate status>`,
-which can then be used to update the state of a form, perhaps indicating which
-fields failed to validate.
+The ultimate result of invoking an validator is an ``Immutable.Map`` of field
+names to :ref:`predicate status <predicate status>`, which can then be used to
+update the state of a form, perhaps indicating which fields failed to validate.
+
+
+Long-running predicates
+-----------------------
+
+A validator takes an optional second argument: a callback function,
+passed the result of a bound predicate, that is called as soon as the result is
+resolved.
+
+Asynchronous predicates may prevent a validator from resolving for an extended
+period of time thus delaying any important user interface updates, in this case
+the callback function can be used to update the user interface as predicate
+results are resolved.

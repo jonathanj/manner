@@ -26,6 +26,10 @@ export class StatusBase {
         this.message = message;
     }
 
+    toString() {
+        return `Status(${this.type})`;
+    }
+
     static is(status, type) {
         return (status instanceof StatusBase) && status.type === type;
     }

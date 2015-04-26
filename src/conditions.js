@@ -152,11 +152,12 @@ class _Condition {
 
 
 /**
- * From an input condition and output actions, create a `_Condition`.
+ * Create a condition object from an input condition and output actions.
  *
  * @param {BoundPredicate} boundPredicate: Bound predicate that determines
  *   how the actions are be applied, in other words: the input.
- * @param {XXX} ...actions: Output actions to apply.
+ * @param {function[]} ...actions: Output actions to apply.
+ * @return {_Condition}: Condition.
  */
 export function when(boundPredicate, ...actions) {
     let check = values => {
@@ -182,8 +183,8 @@ export function when(boundPredicate, ...actions) {
  * Conditions are returned by `when`, for example.
  *
  * By itself the conditions object is not very useful but can be passed to
- * `manner.conditions.instantiate` to create a function that can be called with
- * a model to determine visibility / disabled-ness for inputs.
+ * `instantiate` to create a function that can be called with a model to
+ * determine visibility / disabled-ness for inputs.
  *
  * @param {_Condition[]} ...conditions: Conditions to wrap in a conditions object.
  */

@@ -3,20 +3,14 @@
 Asynchronicity
 ==============
 
-Documentation thus far about the results of various aspects of Manner have been
-intentionally vague mostly to simplify the understanding of Manner's
-operations.
+The documentation about the results of most aspects of Manner will talk about
+them as though they're synchronous, in an attempt to simplify the explanation of
+Manner's operations.
 
-Under the hood Manner bound predicates assume that their predicate may
-potentially return an asynchronous result. The nature of asynchronous actions
-means that this assumption has to propagate throughout the library, the results
-of both validators and conditions are ``Promise``\ s that only resolve when all
-their bound predicates have resolved.
+Under the hood Manner will assume that any predicate may potentially return an
+asynchronous result. The nature of asynchronous results means that this
+assumption has to propagate throughout the library, the results of both
+:ref:`validators` and :ref:`conditions` are ``Promise``\ s that only resolve
+when all their predicates have resolved.
 
 XXX: Talk about pending result state that doesn't exist yet.
-
-
-Long-running predicates
------------------------
-
-XXX: Talk about the field-level callback that doesn't exist yet.

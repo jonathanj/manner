@@ -1,3 +1,5 @@
+.. _conditions:
+
 Conditions
 ==========
 
@@ -46,8 +48,8 @@ Creating a condition
 
 Conditions are only marginally more complex than validators to construct, in
 addition to containing a bound predicate they must also specify actions; the
-``when`` function assists in this regard. Still, this is only a short two-step
-process:
+``when`` function assists in this regard by creating a *condition
+checker*. Still, this is only a short two-step process:
 
 1. Create a conditions definition that can be reused, read as: When ``one`` is
    equal to 42 then hide ``x``, ``y`` and ``z``, and enable ``a``, ``b`` and
@@ -64,17 +66,30 @@ process:
                // Enable "a", "b" and "c" fields on valid input.
                C.enable('a', 'b', 'c')));
 
-2. Instantiate a conditions definition, creating an instance with its own state
-   suitable for repeated use with one particular model:
+2. Instantiate a conditions definition to create an instance, a *condition*,
+   with its own state suitable for repeated use with one particular model:
 
    .. code-block:: javascript
 
       let formConditions = C.instantiate(someConditions);
       formConditions(my_model);  // => Condition results
 
-The ultimate result of invoking an instantiated conditions definition is an
-``Immutable.Map`` of field names to :ref:`condition status <condition status>`,
-which can then be used to update the state of a form.
+The ultimate result of invoking a condition is an ``Immutable.Map`` of field
+names to :ref:`condition status <condition status>`, which can then be used to
+update the state of a form.
+
+
+Long-running predicates
+-----------------------
+
+A condition takes an optional second argument: a callback function,
+passed the result of a condition checker, that is called as soon as the result is
+resolved.
+
+Asynchronous predicates may prevent a validator from resolving for an extended
+period of time thus delaying any important user interface updates, in this case
+the callback function can be used to update the user interface as predicate
+results are resolved.
 
 
 .. _condition status:
