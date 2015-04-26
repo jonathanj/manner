@@ -4,6 +4,8 @@ import {StatusBase} from '../../src/util';
 
 
 /**
+ * Assert that two `Immutable.Map`s of `String` to `StatusBase` instances are
+ * equal.
  */
 export function assertStatuses(i18n, result, expected) {
     let flat = m => m.map(v => {

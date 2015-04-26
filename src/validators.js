@@ -50,7 +50,10 @@ export function validators(...boundPredicates) {
  * another domain.
  */
 export function instantiate(validators) {
-    let state = new _State((bp, values) => bp.validate(values));
+    let noop = () => {};
+    let state = new _State(
+        (bp, values, callback=noop) =>
+            bp.validate(values).then(r => { callback(r); return r; }));
     return validators.validate.bind(validators, state);
 }
 
@@ -74,11 +77,11 @@ class _Validators {
      * @return {Promise}: Promise that resolves to an `Immutable.Map` mapping
      *   field names to `Status` instances.
      */
-    validate(state, model) {
+    validate(state, model, predicateResultCallback) {
         return Promise.map(this._boundPredicates.toJS(), bp => {
             let values = Map(
                 bp.fieldNames.map(name => [name, model.get(name)]));
-            return state.updateFor(bp, values);
+            return state.updateFor(bp, values, predicateResultCallback);
         }).then(results => {
             return Map().merge(...results);
         });

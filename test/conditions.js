@@ -5,12 +5,7 @@ import * as C from '../src/conditions';
 import * as P from '../src/predicates';
 import en from '../src/i18n/en';
 import Promise from 'bluebird';
-
-
-function assertStatuses(i18n, result, expected) {
-    let flat = m => m.map(v => List.of(v.type, v.message(i18n)));
-    assert.equal(flat(result), flat(expected));
-}
+import {assertStatuses} from './support/asserts';
 
 
 function assertAction(i18n, result, action, expected) {
@@ -292,7 +287,7 @@ describe('when', function() {
 
 
 describe('Conditions', function() {
-    it('xxx', function() {
+    it('check', function() {
         let conditions = C.conditions(
             C.when(P.is('a', P.equalTo('one')),
                    C.enable('b'),
@@ -309,6 +304,39 @@ describe('Conditions', function() {
                 Map({'b': Status.disabled(),
                      'c': Status.normal(),
                      'd': Status.disabled()}));
+        });
+    });
+
+    it('predicate result callback', function() {
+        let conditions = C.conditions(
+            C.when(P.is('a', P.equalTo('one')),
+                   C.enable('b'),
+                   C.hide('c')),
+            C.when(P.is('b', P.onceEvery(10, P.equalTo('two'))),
+                   C.disable('d')));
+        let cond = C.instantiate(conditions);
+        let model = Map({'a': 'one', 'b': 'one'});
+        let cbResults = List();
+        let callback = (result) => {
+            cbResults = cbResults.push(result);
+        };
+        return cond(model, callback).then(result => {
+            assertStatuses(
+                en,
+                result,
+                Map({'b': Status.normal(),
+                     'c': Status.hidden(),
+                     'd': Status.normal()}));
+            assert.strictEqual(cbResults.size, 2);
+            assertStatuses(
+                en,
+                cbResults.get(0),
+                Map({'b': Status.normal(),
+                     'c': Status.hidden()}));
+            assertStatuses(
+                en,
+                cbResults.get(1),
+                Map({'d': Status.normal()}));
         });
     });
 });

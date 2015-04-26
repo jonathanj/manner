@@ -199,7 +199,10 @@ export function conditions(...conditions) {
  * another domain.
  */
 export function instantiate(conditions) {
-    let state = new _State((cond, values) => cond.check(values));
+    let noop = () => {};
+    let state = new _State(
+        (cond, values, callback=noop) =>
+            cond.check(values).then(r => { callback(r); return r; }));
     return conditions.check.bind(conditions, state);
 }
 
@@ -215,14 +218,13 @@ class _Conditions {
             ...this._conditions.map(v => v.fieldNames));
     }
 
-    check(state, model) {
+    check(state, model, predicateResultCallback) {
         return Promise.map(this._conditions, cond => {
             let values = Map(
                 cond.fieldNames.map(name => [name, model.get(name)]));
-            return state.updateFor(cond, values);
+            return state.updateFor(cond, values, predicateResultCallback);
         }).then(results => {
-            // XXX: Deal with merge conflicts.
-            return Map().merge(...results);
+            return Map().mergeWith(Status.combine, ...results);
         });
     }
 };

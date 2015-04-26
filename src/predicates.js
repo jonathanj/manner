@@ -121,14 +121,14 @@ export class _State {
      * @return {Promise}: Promise that fires with result of the run function
      *   when it is resolved.
      */
-    updateFor(runnable, values) {
+    updateFor(runnable, values, callback) {
         let id = runnable.id;
         this._cancelPending(id);
         let [oldValues, result] = this._resultCache.get(id, []);
         if (values.equals(oldValues)) {
             return succeed(result);
         }
-        let p = this._run(runnable, values);
+        let p = this._run(runnable, values, callback);
         this._setPending(id, p);
         p.then(result => {
             this._resultCache = this._resultCache.set(id, [values, result]);

@@ -63,4 +63,31 @@ describe('Validators', function() {
             assert.isRejected(p1, Promise.CancellationError),
             result => assertStatuses(en, result, Map()));
     });
+
+    it('predicate result callback', function() {
+        let validators = V.validators(
+            P.is('a', P.equal('one')),
+            P.is('b', P.onceEvery(10, P.equal('two'))));
+        let validate = V.instantiate(validators);
+        let model = Map({'a': 'one', 'b': 'one'});
+        let cbResults = List();
+        let callback = (result) => {
+            cbResults = cbResults.push(result);
+        };
+        return validate(model, callback).then(result => {
+            assertStatuses(
+                en,
+                result,
+                Map({'b': Status.invalid('Must be "two"')}));
+            assert.strictEqual(cbResults.size, 2);
+            assertStatuses(
+                en,
+                cbResults.get(0),
+                Map());
+            assertStatuses(
+                en,
+                cbResults.get(1),
+                Map({'b': Status.invalid('Must be "two"')}));
+        });
+    });
 });
