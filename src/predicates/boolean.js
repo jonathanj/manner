@@ -97,12 +97,6 @@ export function elementOf(expected) {
 }
 
 
-/** Does the value match the given regular expression? */
-export function regex(expn) {
-    return v => expn.test(v);
-}
-
-
 /** Is the value's type one of the specified type names? */
 export function typeOf(...typeNames) {
     let test = elementOf(typeNames);
@@ -119,4 +113,11 @@ export function and(...fs) {
 /** Combine several boolean predicates using logican OR. */
 export function or(...fs) {
     return v => fs.some(x => x(v));
+}
+
+
+/** Does the value match a regular expression? */
+export function regexp(pattern, flags) {
+    let re = new RegExp(pattern, flags);
+    return v => typeOf('string', 'number')(v) && re.test(v);
 }

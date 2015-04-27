@@ -354,13 +354,19 @@ describe('Boolean predicates', function() {
         });
     });
 
-    describe('regex', function() {
+    describe('regexp', function() {
         it('valid', function() {
-            assert.isTrue(PB.regex(/[a-z]/)('a'));
+            assert.isTrue(PB.regexp(/[a-z]/)('a'));
+            assert.isTrue(PB.regexp(/[a-z]/i)('A'));
+            assert.isTrue(PB.regexp('[a-z]')('a'));
+            assert.isTrue(PB.regexp('[a-z]', 'i')('A'));
         });
 
         it('invalid', function() {
-            assert.isFalse(PB.regex(/[a-z]/)('1'));
+            assert.isFalse(PB.regexp(/[a-z]/)('1'));
+            assert.isFalse(PB.regexp('[a-z]')('1'));
+            assert.isFalse(PB.regexp(/[a-z]/)('A'));
+            assert.isFalse(PB.regexp('[a-z]')('A'));
         });
     });
 

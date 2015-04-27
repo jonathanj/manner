@@ -23,5 +23,6 @@ i18n["predicates"]={
 "elementOf":function(d){return "Must be one of: "+i18n.v(d,"value")},
 "numeric":function(d){return "Must be a number"},
 "checked":function(d){return "Must be checked"},
-"unchecked":function(d){return "Must not be checked"}}
+"unchecked":function(d){return "Must not be checked"},
+"regexp":function(d){return "Must match the pattern: "+i18n.v(d,"value")}}
 module.exports = i18n;

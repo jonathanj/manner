@@ -301,6 +301,8 @@ export function message(msgf, f, ...partialArgs) {
  * @param {function} p: Predicate.
  * @return {function}: Wrapped predicate.
  */
+// XXX: This name makes it sound like a periodic call, which it isn't. Maybe
+// `onlyEvery`?
 export function onceEvery(ms, p) {
     return (...rest) => delay(ms).then(() => p(...rest));
 }
@@ -347,9 +349,11 @@ export const elementOf = predicate(PB.elementOf, msg('elementOf'));
 /** Is the value a numeric type or a digit string? */
 export const numeric = predicate(
     () => PB.and(PB.typeOf('string', 'number'),
-                 PB.regex(/^\d*$/)),
+                 PB.regexp(/^\d*$/)),
     msg('numeric'));
 /** Checked? */
 export const checked = predicate(partial(PB.equal, true), msg('checked'));
 /** Unchecked? */
 export const unchecked = predicate(partial(PB.equal, false), msg('unchecked'));
+/** Does a value match a regular expression? */
+export const regexp = predicate(PB.regexp, msg('regexp'));

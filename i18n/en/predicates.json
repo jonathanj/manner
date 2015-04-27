@@ -17,5 +17,6 @@
     "elementOf": "Must be one of: {value}",
     "numeric": "Must be a number",
     "checked": "Must be checked",
-    "unchecked": "Must not be checked"
+    "unchecked": "Must not be checked",
+    "regexp": "Must match the pattern: {value}"
 }

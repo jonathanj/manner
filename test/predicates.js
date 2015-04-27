@@ -549,4 +549,26 @@ describe('Validator functions', function() {
                  ['Must be a number', P.numeric(), 'a']]);
         });
     });
+
+    describe('regexp', function() {
+        it('valid', function() {
+            return assertAllValid(
+                en,
+                [[P.regexp(/[a-z]/), 'a'],
+                 [P.regexp('[a-z]'), 'a'],
+                 [P.regexp(/[a-z]/i), 'A'],
+                 [P.regexp('[a-z]', 'i'), 'A']]);
+        });
+
+        it('invalid', function() {
+            return assertAllInvalid(
+                en,
+                [['Must match the pattern: /[a-z]/', P.regexp(/[a-z]/), null],
+                 ['Must match the pattern: /[a-z]/', P.regexp(/[a-z]/), undefined],
+                 ['Must match the pattern: /[a-z]/', P.regexp(/[a-z]/), 0],
+                 ['Must match the pattern: /[a-z]/', P.regexp(/[a-z]/), []],
+                 ['Must match the pattern: /[a-z]/', P.regexp(/[a-z]/), {}],
+                 ['Must match the pattern: /[a-z]/', P.regexp(/[a-z]/), 'A']]);
+        });
+    });
 });
