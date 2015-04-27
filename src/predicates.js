@@ -294,16 +294,15 @@ export function message(msgf, f, ...partialArgs) {
 
 
 /**
- * Wrap a predicate to ensure it is called only as often as once every ``ms``
- * milliseconds.
+ * Wrap a predicate whose execution is postponed ``ms`` milliseconds.
  *
- * @param {number} ms: Delay after which to invoke the predicate.
+ * This is useful for running a predicate after input has stopped arriving.
+ *
  * @param {function} p: Predicate.
+ * @param {number} ms: Delay after which to invoke the predicate.
  * @return {function}: Wrapped predicate.
  */
-// XXX: This name makes it sound like a periodic call, which it isn't. Maybe
-// `onlyEvery`?
-export function onceEvery(ms, p) {
+export function debounce(p, ms) {
     return (...rest) => delay(ms).then(() => p(...rest));
 }
 

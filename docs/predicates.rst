@@ -134,3 +134,17 @@ Or provide a message function to access input arguments or perform
    }
    let myEqualTo2 = P.message(myEqualToMsg, P.equalTo);
    myEqualTo(42)(21).call('message')  // => "42 !== 21"
+
+
+Long-running predicates
+-----------------------
+
+There may be some cases where it is undesirable to run a predicate too
+frequently, for example predicates that make an HTTP request. Usually these
+situations are resolved via a technique commonly referred to as "debouncing",
+only calling the function at most within some user-specified time frame, which
+may be achieved with the ``debounce`` function.
+
+If the predicate is run again before the debounce interval elapses, the pending
+predicate is cancelled and a new one, with a fresh interval, started in its
+place.

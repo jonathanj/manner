@@ -48,7 +48,7 @@ describe('Validators', function() {
 
     it('async validators are cancelled if they are pending', function() {
         let validators = V.validators(
-            P.is('a', P.onceEvery(10, P.equal('one'))));
+            P.is('a', P.debounce(P.equal('one'), 10)));
         let validate = V.instantiate(validators);
         // Fire off a validation, with invalid data..
         let model1 = Map({'a': 'two'});
@@ -67,7 +67,7 @@ describe('Validators', function() {
     it('predicate result callback', function() {
         let validators = V.validators(
             P.is('a', P.equal('one')),
-            P.is('b', P.onceEvery(10, P.equal('two'))));
+            P.is('b', P.debounce(P.equal('two'), 10)));
         let validate = V.instantiate(validators);
         let model = Map({'a': 'one', 'b': 'one'});
         let cbResults = List();

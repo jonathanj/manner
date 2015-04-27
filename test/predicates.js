@@ -172,7 +172,7 @@ describe('Validator functions', function() {
                 en,
                 'Must be "21"',
                 P.and(P.equalTo(42),
-                      P.onceEvery(10, P.equalTo(21))),
+                      P.debounce(P.equalTo(21), 10)),
                 42);
         });
 
@@ -190,7 +190,7 @@ describe('Validator functions', function() {
                 en,
                 'Must be "21"',
                 P.or(P.equalTo(21),
-                     P.onceEvery(10, P.equalTo(21))),
+                     P.debounce(P.equalTo(21), 10)),
                 42);
         });
 
@@ -198,7 +198,7 @@ describe('Validator functions', function() {
             return assertValid(
                 en,
                 P.or(P.equalTo(42),
-                     P.onceEvery(10, P.equalTo(21))),
+                     P.debounce(P.equalTo(21), 10)),
                 42);
         });
     });

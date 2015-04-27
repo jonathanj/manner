@@ -312,7 +312,7 @@ describe('Conditions', function() {
             C.when(P.is('a', P.equalTo('one')),
                    C.enable('b'),
                    C.hide('c')),
-            C.when(P.is('b', P.onceEvery(10, P.equalTo('two'))),
+            C.when(P.is('b', P.debounce(P.equalTo('two'), 10)),
                    C.disable('d')));
         let cond = C.instantiate(conditions);
         let model = Map({'a': 'one', 'b': 'one'});
